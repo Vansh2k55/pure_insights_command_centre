@@ -1250,26 +1250,73 @@ td code {
 }
 .toast {
   position: fixed;
-  bottom: 25px;
-  right: 25px;
+  right: 24px;
+  bottom: 24px;
   z-index: 80;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  background: var(--accent);
-  color: var(--text);
-  border: 1px solid var(--border);
+  align-items: flex-start;
+  gap: 11px;
+  width: min(370px, calc(100vw - 32px));
+  padding: 13px 14px 13px 12px;
+  border: 1px solid #4a5362;
+  border-radius: 12px;
+  background: #272c35;
+  color: #fff;
+  box-shadow: 0 18px 48px #0008;
+  animation: toast-in 220ms ease-out;
+}
+.toast-icon {
+  display: grid;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  place-items: center;
   border-radius: 9px;
-  padding: 15px 18px;
+  background: #ff702322;
+  color: #ff975c;
+}
+.toast-copy {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  padding-top: 1px;
+}
+.toast-copy strong {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+}
+.toast-copy span {
+  overflow-wrap: anywhere;
+  color: #c4cad5;
   font-size: 12px;
-  max-width: calc(100vw - 40px);
-  box-shadow: 0 8px 35px #233d3025;
+  line-height: 1.45;
 }
 .toast button {
+  display: grid;
+  width: 27px;
+  height: 27px;
+  flex: 0 0 27px;
+  place-items: center;
+  margin: -3px -4px 0 auto;
   border: 0;
-  background: none;
-  color: var(--muted);
-  display: flex;
+  border-radius: 7px;
+  background: transparent;
+  color: #c4cad5;
+}
+.toast button:hover {
+  background: #ffffff12;
+  color: #fff;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) translateX(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0);
+  }
 }
 .drawer-backdrop {
   position: fixed;

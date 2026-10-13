@@ -1453,8 +1453,13 @@ function App() {
       </div>
       {toast && (
         <div className="toast" role="status">
-          <Radio size={16} />
-          {toast}
+          <div className="toast-icon" aria-hidden="true">
+            <Radio size={16} />
+          </div>
+          <div className="toast-copy">
+            <strong>Live notification</strong>
+            <span>{toast}</span>
+          </div>
           <button
             aria-label="Dismiss notification"
             onClick={() => setToast("")}
