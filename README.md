@@ -140,7 +140,7 @@ Negative credit values are analytical nulls. The report stays in operational mon
 
 The verification fixture keeps malformed or missing tags in an explicit unallocated bucket. It also exposes the metering residual rather than automatically charging it to reports; that residual is not proof of idle compute. The explorer's query-count allocation is a disclosed **hypothetical proxy**, never billed attribution.
 
-The interactive lab executes SQLite SQL against its own synthetic fixture. Snowflake scripts 01–05 were checked locally through explicit DuckDB adaptations described in the documentation; native Snowflake execution was not performed.
+The interactive lab executes SQLite SQL against its own synthetic fixture. Snowflake scripts 01–04 were executed locally through explicit DuckDB adaptations; script 05 is an optional production adapter and was syntax-checked only. Native Snowflake execution was not performed.
 
 ## Dataset interpretation and limitations
 
