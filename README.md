@@ -1,10 +1,61 @@
-# Pure Insights Command Centre — v2
+# Pure Insights Command Centre
 
-A complete React + Express submission for Case Study 3: Technical Data AI Validation — Monetization. Monitor report health and ownership, inspect persistent incidents, demonstrate live notifications, and verify report cost calculations against simulated query logs. The original dataset is preserved unchanged. No cloud account, API key, Python runtime or Docker is needed to run the application.
+> Everpure placement submission · Case Study 3 — Technical Data AI Validation: Monetization
 
-## Start on Windows, macOS or Linux
+Pure Insights Command Centre is a local React and Node.js workspace for investigating report health, ownership and cost attribution. It turns the supplied report observations into a controlled operational simulation: teams can inspect slow loads and refresh failures, follow incident recovery, assign operational ownership, and examine cost-per-view calculations without presenting the fixture as a live cloud bill.
 
-Install **Node.js 24 LTS**. Extract the ZIP, open a terminal inside `pure-insights`, and run:
+The project is deliberately explicit about its evidence boundaries. Replay is a simulated feed over undated source scenarios; the evidence assistant is deterministic rather than an LLM; and the cost lab runs a separate SQLite implementation of the verification logic.
+
+## At a glance
+
+| Case-study need | What is implemented |
+| --- | --- |
+| Operations visibility | Overview, inventory, alert centre, validation and audit views for report latency, refresh state and missing operational ownership. |
+| React + Node role-based application | React 19/Vite client, Express 5 API and five server-enforced roles. Financial fields are projected out for Engineer, Viewer and Owner responses. |
+| Real-time notification | Cookie-authenticated WebSocket stream with reconnect cursors, alert deduplication, acknowledgement and confirmed recovery. |
+| Monetization analysis | Direct-credit attribution, assumed credit price, matched cost/view population, chargeback, sensitivity and an explicitly hypothetical query-count proxy. |
+| SQL deliverables | Snowflake fixture and attribution scripts, acceptance checks, optional ACCOUNT_USAGE adapter, plus the SQLite SQL executed by the interactive lab. |
+| Technical handover | API/stream contracts, architecture, data decisions, SQL guide, verification report, demo guide and automated tests. |
+
+## Application views
+
+### Operations overview
+
+![Operations overview: current source scenario, replay controls, health and alert metrics](docs/images/operations-overview.png)
+
+### Cost intelligence
+
+![Cost intelligence: executed SQLite verification checks and cost analysis](docs/images/cost-intelligence.png)
+
+### Report evidence drawer
+
+![Report evidence drawer: source traceability, ownership and deterministic evidence assistant](docs/images/report-evidence-drawer.png)
+
+These images were captured locally from the passing browser suite. They show seeded demonstration data, not a deployed environment or provider telemetry.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  csv["Original CSV<br/>2,000 observations"] --> domain["Domain normalization<br/>and scenario selection"]
+  domain --> api["Express REST API<br/>+ WebSocket stream"]
+  sqlite[("SQLite<br/>sessions, assignments, incidents,<br/>audit, events and replay state")]
+  api <--> sqlite
+  react["React + Vite client"] <--> |"HTTP REST<br/>WebSocket"| api
+  domain --> intelligence["Separate in-memory SQLite<br/>verification implementation"]
+  sql["SQL fixture & checks<br/>Snowflake scripts 01–05<br/>SQLite script 06"] --> intelligence
+```
+
+One Node.js 24 process serves the production client, API and authenticated stream. The original CSV stays unchanged on disk. SQLite persists local application state; it is not a cloud data warehouse. The separate verification path builds a labelled synthetic query/tag fixture and executes [`sql/06_local_verification.sql`](sql/06_local_verification.sql); the Snowflake scripts are supplied separately and are not invoked by the application.
+
+## Run locally
+
+### Prerequisites
+
+- Node.js **24 LTS** (the package requires Node `>=24.0.0`)
+- npm, included with Node
+
+From the `pure-insights` directory on Windows, macOS or Linux:
 
 ```sh
 npm ci
@@ -12,60 +63,94 @@ npm run build
 npm start
 ```
 
-Open **http://localhost:3000**. Keep the terminal open; Ctrl+C stops the app. Windows PowerShell/VS Code terminal works. If PowerShell blocks `npm.ps1`, use `npm.cmd` instead of `npm`. The same configured local port also accepts `127.0.0.1` and IPv6 loopback; other hosts/ports require an exact APP_ORIGIN.
+Open [http://localhost:3000](http://localhost:3000). Keep the terminal open while using the app; `Ctrl+C` stops it. In PowerShell, use `npm.cmd` if execution policy blocks `npm.ps1`.
 
-**Demo password: `InsightsDemo2026!`**. The login screen has account shortcuts.
+For development with Vite's proxy:
 
-| Account                    | Role / access                                                                               |
-| -------------------------- | ------------------------------------------------------------------------------------------- |
-| admin@pureinsights.demo    | Administration, owners, replay, telemetry, financial analysis, audit and access management  |
-| engineer@pureinsights.demo | Operational monitoring, telemetry simulation and acknowledgement; financial data redacted   |
-| analyst@pureinsights.demo  | Financial analysis, validation and acknowledgement; no operational writes                   |
-| viewer@pureinsights.demo   | Read-only workspace health; financial data redacted                                         |
-| owner@pureinsights.demo    | Only currently assigned reports, their history/evidence and alerts; financial data redacted |
+```sh
+npm run dev
+```
 
-The owner account starts with no assigned reports. As Admin, inspect a report and click **Assign to demo owner**, then sign in as Owner to demonstrate restricted access. Account role changes and disabling revoke existing sessions immediately. Access management changes these existing demo accounts; it does not provision arbitrary new users.
+Then open [http://localhost:5173](http://localhost:5173). Stop a production server before starting development mode.
 
-First run creates `runtime/insights.sqlite`. Sessions, explicit owner assignments, source selection, simulated samples, incidents and audit history persist. Replay always starts paused after a server restart. All demo credentials are public assessment accounts, not deployment credentials.
+The configured local port also accepts `127.0.0.1` and IPv6 loopback. Other origins require an exact `APP_ORIGIN` configuration.
 
-## What the submission demonstrates
+### Demo accounts
 
-| Brief requirement                   | Implementation                                                                                                                                                                |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| React dashboard + Node/Express RBAC | Six responsive views; five server-enforced roles; owner scope; complete cost redaction in lists, detail, history, summary and CSV                                             |
-| System health and orphaned reports  | Refresh/latency distributions, median/P95, defined health score, priority watch, owner assignment with source provenance                                                      |
-| WebSocket or SSE alerts             | Cookie-authenticated WebSocket; strictly >15s latency; refresh failure; UNKNOWN data gaps; severity, deduplication, acknowledgement, confirmed recovery, replay and reconnect |
-| Simulated Snowflake attribution SQL | Tagged direct credits, canonical query records, invalid-credit quarantine, unallocated queries, signed warehouse reconciliation and matched per-view costs                    |
-| Verifiable cost dashboard           | Eight executed local SQL checks, owner chargeback, spend/view scatter, price sensitivity and explicitly hypothetical query-count proxy                                        |
-| Technical handover                  | OpenAPI, AsyncAPI, architecture, data decisions, SQL guide, demonstration/interview guide, executed verification report and CI workflow                                       |
+All seeded demonstration accounts use the password **`InsightsDemo2026!`**.
 
-Dark/orange presentation and compact navigation use visual inspiration from a peer interface; implementation is original. Dark/light themes require no external assets. A deterministic evidence assistant explains current fields and useful next checks. It does not call an LLM or pretend to establish causal diagnoses.
+| Account | Role | What it can do |
+| --- | --- | --- |
+| `admin@pureinsights.demo` | Admin | Manage assignments/accounts, replay, simulations, costs, validation and audit. |
+| `engineer@pureinsights.demo` | Engineer | Monitor operations, simulate telemetry and acknowledge alerts; financial fields are redacted. |
+| `analyst@pureinsights.demo` | Analyst | Access costs and validation, and acknowledge alerts; cannot make operational changes. |
+| `viewer@pureinsights.demo` | Viewer | Read operational health only; financial fields are redacted. |
+| `owner@pureinsights.demo` | Owner | See only reports currently assigned to that account, along with permitted history and alerts; financial fields are redacted. |
 
-## Six-minute demonstration
+The Owner account starts with no report assignments. As Admin, open a report and use **Assign to demo owner**, then sign in as Owner to demonstrate the server-enforced scope. Changing a role or disabling an account revokes existing sessions.
 
-1. Sign in as Admin. Set 1 shows 100 reports, 33 failed/timed-out refreshes, 77 slow loads, 17 missing owners and 3 unknown outcomes. There are 113 active condition episodes: multiple conditions can affect one report.
-2. Start replay at 3s/set, observe WebSocket-driven changes, then pause. Explain that this replays **undated source scenarios**, not live cloud measurements or calendar months. Step advances once; set 20 stops automatically.
-3. Load set 1. Inspect `RPT_203`, assign a demo owner, and inspect its preserved source history. The operational assignment persists across source sets; the source CSV/history remains unchanged.
-4. Inspect `RPT_200`. Recover it, then click **Slow + failed**. Observe two alerts. Publish latency 35s to see a critical latency update without a duplicate incident. Acknowledge, then recover and inspect resolved episodes. UNKNOWN never establishes refresh recovery.
-5. Open Cost intelligence. Explain $3/credit as an assumption, 99/100 complete-cost reports and the matching 78,239-view denominator. Show the SQL lab, chargeback, scatter, sensitivity and disclosed proxy. Discuss unallocated/residual compute rather than silently billing it to reports.
-6. Sign in as Owner, Viewer and Engineer to demonstrate scope and financial redaction. The server enforces this even if someone calls the API directly. As Admin, inspect audit/access management.
+## Roles, security and scope
 
-Manual **Load / reset** pauses replay, clears simulated samples, ends current incidents with SCENARIO_RESET and seeds the selected source scenario. It retains explicit owner assignments, audit and historical incidents. Replay advances preserve incident episodes and reconcile changed conditions. Source set detection times are application times, not inferred measurement timestamps.
+Authorization is enforced by the server for REST, CSV exports and WebSocket delivery—not just hidden in the UI. Sessions use an opaque HttpOnly, SameSite=Strict cookie; only a token digest is stored. Writes require the `X-App-Request: pure-insights` header and accepted same-origin requests. The API also applies input validation, body limits, rate limits, origin checks, stream revalidation and backpressure limits.
+
+Financial values and finance-derived flags are removed from lists, report details, history, summaries, CSV and stream payloads for Engineer, Viewer and Owner roles. Owner stream events are filtered against current assignments; unrelated events do not reveal report identities.
+
+## Replay, simulation and incident recovery
+
+Each observation set selects the nth original occurrence for every report. The replay deck can start, pause, step one set at a time and change speed. It clears manual simulated samples as it advances, stops at set 20, and always comes up paused after a process restart. It is a **simulated feed**, not live AWS or Snowflake ingestion.
+
+Admins can use **Load / reset** to pause replay, select a source set and clear manual samples. Engineers and Admins can publish manual latency/refresh samples. Explicit operational owner assignments persist across scenarios and restarts; the CSV source history and source owner evidence never change.
+
+Incident policy is intentionally narrow:
+
+- latency strictly greater than 15 seconds opens a latency condition; over 30 seconds is critical;
+- `FAILED` and `TIMED_OUT` refreshes are critical;
+- `UNKNOWN` is a warning data gap and cannot resolve an earlier refresh failure;
+- only `SUCCESS` recovers refresh and only known latency at or below 15 seconds recovers latency;
+- acknowledgement records review, not resolution; repeated failures reuse the active episode ID.
+
+## Cost attribution and verification boundaries
+
+The displayed cost model starts with valid direct source credits, applies the configured **$3.00/credit assumption** by default, and adds the supplied hosting component where available. Portfolio cost per view is a ratio of sums over the same cost-complete reports; it is not an average of report ratios and views are **not** unique users. Zero-view unit costs remain unavailable.
+
+Negative credit values are analytical nulls. The report stays in operational monitoring, retaining valid latency, refresh, ownership and usage evidence, but the invalid financial value is neither replaced with zero nor made positive. The current set-1 controls are 99 cost-complete reports with 78,239 matching views, $188,417.87 known combined cost at the $3 assumption, and a portfolio cost/view of about $2.40823464.
+
+The verification fixture keeps malformed or missing tags in an explicit unallocated bucket. It also exposes the metering residual rather than automatically charging it to reports; that residual is not proof of idle compute. The explorer's query-count allocation is a disclosed **hypothetical proxy**, never billed attribution.
+
+The interactive lab executes SQLite SQL against its own synthetic fixture. Snowflake scripts 01–05 were checked locally through explicit DuckDB adaptations described in the documentation; native Snowflake execution was not performed.
+
+## Dataset interpretation and limitations
+
+- The supplied CSV has **2,000 observations**, **100 report IDs** and **20 observations per report**.
+- Source order produces 20 complete observation sets. They are **undated scenarios**, not calendar months, historical measurements or non-overlapping billing periods.
+- The CSV has no query IDs, warehouse identifiers, distinct-user counts or measurement dates. It cannot establish unique users, a live billing window or real cloud attribution.
+- All 100 reports have conflicting non-null source owners across their source observations. An operational assignment establishes current accountability inside the demo; it does not rewrite historical source ownership.
+- The evidence assistant provides deterministic, source-grounded next checks. It does not call an LLM or infer root cause.
+
+For the complete methodology and source controls, read [Data decisions](docs/DATA_DECISIONS.md) and the [source manifest](docs/SOURCE_MANIFEST.md).
 
 ## Verify
+
+The following commands were run locally for this README update:
 
 ```sh
 npm test
 npm run validate
-npm audit --audit-level=moderate
 npm run build
+```
+
+Results: **26/26 Node tests passed**; the source validator confirmed 2,000 rows, 100 reports and 20 observation sets; and the Vite production build completed successfully.
+
+Browser verification can be run with:
+
+```sh
 npx playwright install chromium
 npm run test:browser
 ```
 
-The browser test uses an isolated in-memory app on localhost:3107. Its screenshots are ignored QA output. Linux CI installs browser dependencies with `npx playwright install --with-deps chromium`. BROWSER_TEST_PORT and PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH can override the test port/browser.
+In this update, the browser suite passed using a locally installed Chrome executable because Playwright's managed Chromium binary was not present. It exercised all six views, login, role restrictions, search, assignment, export, alerts/recovery, replay, evidence/history, responsive layout and the delayed-refresh drawer-closure regression. The screenshots above were produced by that passing run.
 
-Optional independent source and Snowflake-fixture tests use Python 3.11+:
+Optional, separate checks (not run for this README update) are:
 
 ```sh
 python scripts/validate-independent.py
@@ -73,48 +158,55 @@ python -m pip install -r tests/requirements-sql.txt
 python tests/sql_validation.py
 ```
 
-The first command uses only the Python standard library. Python packages are needed only for the optional SQL test, so there is no root `requirements.txt`. The interactive SQL lab already runs with Node alone. The Snowflake test parses all five Snowflake scripts and executes ten fixture checks in DuckDB with explicit adapters; **native Snowflake execution remains unverified**. See [verification report](docs/VERIFICATION_REPORT.md).
+The first command uses only the Python standard library. The DuckDB test validates adapted fixture semantics; it does not amount to native Snowflake execution. Docker and hosted CI configurations are included in the repository but were not exercised for this update.
 
-## Source interpretation
+## Suggested evaluator walkthrough
 
-The CSV contains **2,000 rows, 100 report IDs and 20 occurrences per ID**. It has no dates, warehouses, query IDs or distinct user counts. Each set selects one occurrence per report in original file order. We do not turn those sets into invented months or sum repeated monthly summaries.
+1. Sign in as Admin and inspect set 1: 100 reports, 33 failed/timed-out refreshes, 77 slow reports, 17 reports without an operational owner and three unknown refresh outcomes.
+2. Start replay, pause it and step once. Explain that each movement is an undated scenario, not a cloud-data refresh.
+3. Load set 1, inspect `RPT_203`, assign it to the demo owner, and compare the persistent operational assignment with preserved source observations.
+4. Inspect `RPT_200`, recover it, then select **Slow + failed**. Acknowledge an incident and recover it to show the difference between review and confirmed recovery.
+5. Open **Cost intelligence**. Review the eight SQLite verification checks, the matching denominator, direct credits, unallocated/metering residual and the labelled proxy.
+6. Sign in as Owner, Viewer and Engineer to show owner scope, redaction and operational permissions. Return as Admin to inspect the audit trail and account controls.
 
-Twenty-four negative-credit observations become analytical nulls. Their valid health, latency, ownership and usage fields remain available. Invalid costs stay unavailable; they are not replaced with zero or absolute values. All 100 reports have conflicting source owners across observations. An explicit operational assignment establishes accountability inside this demo without asserting historical source truth.
+## Project structure
 
-Cost per view is a ratio of sums over the same cost-complete reports. It is not cost per unique user. The Snowflake fixture explicitly invents a day and aggregate query records; the interactive SQLite counterpart labels its metering and untagged/residual credits as synthetic. Neither is a live provider bill. Read [data decisions](docs/DATA_DECISIONS.md) and [SQL guide](docs/SQL_GUIDE.md).
-
-## Development and optional configuration
-
-```sh
-npm run dev
+```text
+client/                 React/Vite interface
+server/                 Express API, WebSocket stream, domain logic and SQLite store
+data/reports.csv        Supplied source dataset, retained unchanged
+sql/                    Snowflake fixture/attribution scripts and SQLite lab SQL
+tests/                  Node, API/security and browser checks
+docs/                   API contracts, architecture, data/SQL decisions and demo handover
+docs/images/            Browser-captured README screenshots
+scripts/                Local validation, fixture generation and development helper
 ```
 
-Open http://localhost:5173. The development helper starts the API and Vite proxy for REST/WebSocket traffic. Stop an existing production process before using development mode.
+## Configuration and troubleshooting
 
-`.env.example` is an optional template. `npm start` does not load `.env` automatically. To use it, copy the template, edit values, then run:
+`npm start` does not load `.env` automatically. To apply the included template, copy `.env.example` to `.env`, edit it, then use:
 
 ```sh
 node --env-file=.env server/index.js
 ```
 
-| Variable         | Default                 | Purpose                                                                         |
-| ---------------- | ----------------------- | ------------------------------------------------------------------------------- |
-| PORT / HOST      | 3000 / 127.0.0.1        | Local server address                                                            |
-| APP_ORIGIN       | http://localhost:3000   | Exact configured browser origin; same-port loopback aliases permitted           |
-| DB_PATH          | runtime/insights.sqlite | Persisted SQLite state                                                          |
-| DEMO_MODE        | true                    | Demo accounts/hints, simulated telemetry, source selection and replay           |
-| DEMO_PASSWORD    | InsightsDemo2026!       | Seed password when each account is first created; does not reset existing users |
-| CREDIT_PRICE_USD | 3                       | Explicit nonnegative price assumption; interactive SQL uses the same value      |
-| COOKIE_SECURE    | false locally           | Set true behind HTTPS                                                           |
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `PORT` / `HOST` | `3000` / `127.0.0.1` | Local server address. |
+| `APP_ORIGIN` | `http://localhost:3000` | Exact browser origin; same-port loopback aliases are permitted. |
+| `DB_PATH` | `runtime/insights.sqlite` | Persistent local application state. |
+| `DEMO_MODE` | `true` | Enables demo accounts, replay and simulated telemetry. |
+| `DEMO_PASSWORD` | `InsightsDemo2026!` | Seed password on first account creation; does not reset existing accounts. |
+| `CREDIT_PRICE_USD` | `3` | Non-negative cost assumption also used by the interactive lab. |
+| `COOKIE_SECURE` | `false` locally | Set `true` behind HTTPS. |
 
-For non-demo mode, supply a strong DEMO_PASSWORD before first creation and set DEMO_MODE=false. This disables simulated ingestion and public credential hints; it does not create a cloud connection. New telemetry/identity integration is a separate deployment step.
+First run creates `runtime/insights.sqlite`. It persists sessions, owner assignments, selected source set, simulated samples, incident episodes and audit history. For a fresh demonstration, start with a fresh runtime database; do not commit runtime databases, `node_modules`, `.env`, `client/dist` or browser-test output.
 
-Docker is optional: `docker compose up --build`. It supplies Node 24 and a persisted volume. Docker/hosted CI are supplied configurations, not environments executed in this package's verification.
+## Further documentation
 
-## Submission and upgrade
-
-The brief asks for a **GitHub repository**. Upload this extracted project, retain package-lock.json, and share the repository link. Exclude node_modules, .env, runtime databases, client/dist and test-results. The archive includes source, specs, SQL, tests and CI; it does not publish a repository automatically.
-
-When replacing the previous version, use a fresh extraction. To preserve existing demo state, stop the old process and copy its `runtime` folder into the new project. Existing schemas migrate on startup. Re-run npm ci and npm run build, restart, then hard-refresh the browser. Do not mix only selected v2 files with the old version.
-
-See [demo/interview guide](docs/DEMO_AND_INTERVIEW.md), [REST/stream specification](docs/API_WEBSOCKET_SPEC.md), [architecture](docs/ARCHITECTURE.md), [upgrade notes](docs/IMPROVEMENTS.md) and [source integrity](docs/SOURCE_MANIFEST.md).
+- [REST and WebSocket specification](docs/API_WEBSOCKET_SPEC.md) · [OpenAPI](docs/openapi.json) · [AsyncAPI](docs/asyncapi.json)
+- [Architecture](docs/ARCHITECTURE.md)
+- [Data decisions](docs/DATA_DECISIONS.md) · [SQL guide](docs/SQL_GUIDE.md)
+- [Verification report](docs/VERIFICATION_REPORT.md)
+- [Demo and interview handover](docs/DEMO_AND_INTERVIEW.md)
+- [Improvement notes](docs/IMPROVEMENTS.md)
