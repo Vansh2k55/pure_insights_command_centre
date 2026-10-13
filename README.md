@@ -12,7 +12,7 @@ The project is deliberately explicit about its evidence boundaries. Replay is a 
 | --- | --- |
 | Run it | `npm ci && npm run build && npm start` → [http://localhost:3000](http://localhost:3000) |
 | Sign in | `admin@pureinsights.demo` / `InsightsDemo2026!` |
-| Verify it | `npm test` → 26 passing Node tests; browser suite also passed locally |
+| Verify it | `npm test` → 28 passing Node tests; browser suite also passed locally |
 | Core proof | Server-enforced RBAC/redaction, WebSocket alerts, replay controls, SQLite cost lab and Snowflake SQL suite |
 | Important boundary | The source is 20 undated simulated scenarios—not live AWS/Snowflake telemetry or a provider bill |
 
@@ -162,7 +162,7 @@ npm run validate
 npm run build
 ```
 
-Results: **26/26 Node tests passed**; the source validator confirmed 2,000 rows, 100 reports and 20 observation sets; and the Vite production build completed successfully.
+Results: **28/28 Node tests passed**; the source validator confirmed 2,000 rows, 100 reports and 20 observation sets. It also checks golden operational and cost controls for every set; the Vite production build completed successfully.
 
 Browser verification can be run with:
 

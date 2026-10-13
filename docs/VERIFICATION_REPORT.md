@@ -4,7 +4,7 @@ Prepared October 13, 2026. Results identify what was actually executed; test cou
 
 | Check                               | Executed coverage                                                                                                                                                                                                                                     | Result                                    |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Node domain/API/integration tests   | 26 tests: source grain, input validation, redaction, CSV safety, authentication/origins, incident policy, persistence, scope, replay, session revocation and event retention                                                                          | Passed                                    |
+| Node domain/API/integration tests   | 28 tests: source grain, input validation, redaction, CSV safety, authentication/origins, incident policy, persistence, scope, replay, session revocation, event retention, full role/route permissions and WebSocket boundary controls              | Passed                                    |
 | Independent SQL path                | All 20 sets × credit prices 0, 3, 4.5; per-report SQL/domain parity, invalid-credit nulls, stale duplicates, malformed tags, matching views and portfolio totals                                                                                      | Passed                                    |
 | Role/scope security                 | Admin/engineer/analyst/viewer/owner; owner list/detail/history/evidence/CSV/metrics/alerts; unrelated owner WebSocket delivery/replay filtered; live access change revocation                                                                         | Passed                                    |
 | Incident lifecycle                  | Strict 15s boundary, warning/critical changes without duplicate IDs, ack idempotence, confirmed recovery, UNKNOWN retaining prior refresh failure, new episodes                                                                                       | Passed                                    |
@@ -33,7 +33,7 @@ The package was not published to GitHub. Genuine AWS/Snowflake ingestion, servic
 
 ## Reproduce
 
-Use README's application/test commands. `npm test` contains 26 substantive tests; the browser script is a complete multi-role journey. `python scripts/validate-independent.py` needs no third-party modules. The optional SQL runner uses tests/requirements-sql.txt. Runtime databases, dependencies, build output and QA screenshots are excluded from the ZIP.
+Use README's application/test commands. `npm test` contains 28 substantive tests; the browser script is a complete multi-role journey. `python scripts/validate-independent.py` needs no third-party modules and checks source controls against `tests/scenario_controls.json`. The optional SQL runner uses tests/requirements-sql.txt. Runtime databases, dependencies, build output and QA screenshots are excluded from the ZIP.
 
 ## Verification coverage map
 
