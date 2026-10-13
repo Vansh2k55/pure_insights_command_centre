@@ -1,0 +1,13 @@
+services:
+  command-centre:
+    build: .
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      APP_ORIGIN: http://localhost:3000
+      DEMO_MODE: "true"
+    volumes:
+      - insights-state:/app/runtime
+    restart: unless-stopped
+volumes:
+  insights-state:

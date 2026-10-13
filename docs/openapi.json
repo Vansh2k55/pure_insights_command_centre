@@ -1,0 +1,1174 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Pure Insights Command Centre API",
+    "version": "2.0.0",
+    "description": "Cookie authentication and server-side role/scope enforcement. Local synthetic assessment data; financial projections are restricted."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/api"
+    }
+  ],
+  "security": [
+    {
+      "session": []
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Service health",
+        "operationId": "get_health",
+        "x-roles": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": []
+      }
+    },
+    "/config": {
+      "get": {
+        "summary": "Demo configuration",
+        "operationId": "get_config",
+        "x-roles": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": []
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Start session",
+        "operationId": "post_auth_login",
+        "x-roles": [],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "requestProtection": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string",
+                    "maxLength": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Current session",
+        "operationId": "get_auth_me",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "Revoke session",
+        "operationId": "post_auth_logout",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          },
+          "204": {
+            "description": "Session revoked"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ]
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Scoped workspace summary",
+        "operationId": "get_dashboard",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/reports": {
+      "get": {
+        "summary": "Filter and paginate scoped reports",
+        "operationId": "get_reports",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["SUCCESS", "FAILED", "TIMED_OUT", "UNKNOWN"]
+            }
+          },
+          {
+            "name": "orphan",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            }
+          },
+          {
+            "name": "slow",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 12
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "report_id",
+                "report_name",
+                "monthly_active_views",
+                "avg_load_time_sec",
+                "total_cost_usd",
+                "cost_per_view_usd"
+              ],
+              "default": "report_id"
+            }
+          },
+          {
+            "name": "direction",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["asc", "desc"],
+              "default": "asc"
+            }
+          }
+        ]
+      }
+    },
+    "/reports/export": {
+      "get": {
+        "summary": "Export scoped reports; financial redaction applies",
+        "operationId": "get_reports_export",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 200
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["SUCCESS", "FAILED", "TIMED_OUT", "UNKNOWN"]
+            }
+          },
+          {
+            "name": "orphan",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            }
+          },
+          {
+            "name": "slow",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["true", "false"]
+            }
+          }
+        ]
+      }
+    },
+    "/reports/{id}": {
+      "get": {
+        "summary": "Current report in allowed scope",
+        "operationId": "get_reports_id",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reports/{id}/history": {
+      "get": {
+        "summary": "Original undated observations, role projected",
+        "operationId": "get_reports_id_history",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reports/{id}/explanation": {
+      "get": {
+        "summary": "Deterministic current-field evidence",
+        "operationId": "get_reports_id_explanation",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    },
+    "/reports/{id}/owner": {
+      "patch": {
+        "summary": "Persist operational owner",
+        "operationId": "patch_reports_id_owner",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["owner_email"],
+                "properties": {
+                  "owner_email": {
+                    "type": "string",
+                    "format": "email",
+                    "maxLength": 254
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports/{id}/telemetry": {
+      "post": {
+        "summary": "Simulate operational sample in demo mode",
+        "operationId": "post_reports_id_telemetry",
+        "x-roles": ["admin", "engineer"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Telemetry"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/alerts": {
+      "get": {
+        "summary": "Latest 500 permitted incidents",
+        "operationId": "get_alerts",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "parameters": [
+          {
+            "name": "state",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": ["active", "resolved", "all"],
+              "default": "active"
+            }
+          }
+        ]
+      }
+    },
+    "/alerts/{id}/ack": {
+      "post": {
+        "summary": "Acknowledge active permitted episode",
+        "operationId": "post_alerts_id_ack",
+        "x-roles": ["admin", "engineer", "analyst", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/costs": {
+      "get": {
+        "summary": "Financial overview, insights and SQL verification",
+        "operationId": "get_costs",
+        "x-roles": ["admin", "analyst"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/costs/insights": {
+      "get": {
+        "summary": "Chargeback, sensitivity and disclosed proxy",
+        "operationId": "get_costs_insights",
+        "x-roles": ["admin", "analyst"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/costs/verification": {
+      "get": {
+        "summary": "Execute labelled local SQL fixture checks",
+        "operationId": "get_costs_verification",
+        "x-roles": ["admin", "analyst"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/quality": {
+      "get": {
+        "summary": "Full-source validation audit",
+        "operationId": "get_quality",
+        "x-roles": ["admin", "analyst"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/scenario": {
+      "post": {
+        "summary": "Reset source scenario",
+        "operationId": "post_scenario",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["snapshot"],
+                "properties": {
+                  "snapshot": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/replay": {
+      "get": {
+        "summary": "Replay status",
+        "operationId": "get_replay",
+        "x-roles": ["admin", "engineer", "analyst", "viewer", "owner"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      },
+      "post": {
+        "summary": "Control demo source replay",
+        "operationId": "post_replay",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["action"],
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": ["start", "pause", "step"]
+                  },
+                  "interval_ms": {
+                    "type": "integer",
+                    "minimum": 1000,
+                    "maximum": 30000
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/audit": {
+      "get": {
+        "summary": "Latest 200 audit records",
+        "operationId": "get_audit",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Existing accounts",
+        "operationId": "get_users",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        }
+      }
+    },
+    "/users/{email}": {
+      "patch": {
+        "summary": "Change account access and revoke sessions",
+        "operationId": "patch_users_email",
+        "x-roles": ["admin"],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Authentication required"
+          },
+          "403": {
+            "description": "Role, origin, header or demo restriction"
+          },
+          "404": {
+            "description": "Not found or out of scope"
+          },
+          "409": {
+            "description": "State conflict"
+          },
+          "429": {
+            "description": "Rate limit"
+          }
+        },
+        "security": [
+          {
+            "session": [],
+            "requestProtection": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["role", "active"],
+                "properties": {
+                  "role": {
+                    "$ref": "#/components/schemas/Role"
+                  },
+                  "active": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "session": {
+        "type": "apiKey",
+        "in": "cookie",
+        "name": "pi_session"
+      },
+      "requestProtection": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-App-Request",
+        "description": "Required value: pure-insights; all writes including login/logout."
+      }
+    },
+    "schemas": {
+      "Role": {
+        "type": "string",
+        "enum": ["admin", "engineer", "analyst", "viewer", "owner"]
+      },
+      "Telemetry": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["avg_load_time_sec", "last_refresh_status"],
+        "properties": {
+          "avg_load_time_sec": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 3600
+          },
+          "last_refresh_status": {
+            "type": "string",
+            "enum": ["SUCCESS", "FAILED", "TIMED_OUT", "UNKNOWN"]
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

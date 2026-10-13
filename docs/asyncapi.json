@@ -1,0 +1,87 @@
+{
+  "asyncapi": "2.6.0",
+  "info": {
+    "title": "Pure Insights operational events",
+    "version": "2.0.0"
+  },
+  "servers": {
+    "local": {
+      "url": "localhost:3000",
+      "protocol": "ws",
+      "description": "Cookie authentication, allowed Origin; wss behind HTTPS."
+    }
+  },
+  "channels": {
+    "/ws": {
+      "description": "Receive-only stream. ?since is a nonnegative retained cursor. Owner events are currently scoped; unrelated events become cursor controls. Latest 1,000 events retained. Resync on gaps. Global activity timing/cursor remains visible.",
+      "subscribe": {
+        "message": {
+          "oneOf": [
+            {
+              "$ref": "#/components/messages/Event"
+            },
+            {
+              "$ref": "#/components/messages/Control"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "components": {
+    "messages": {
+      "Event": {
+        "name": "PersistentEvent",
+        "payload": {
+          "type": "object",
+          "required": ["id", "type", "payload", "created_at"],
+          "properties": {
+            "id": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "type": {
+              "type": "string",
+              "enum": [
+                "alert.created",
+                "alert.updated",
+                "alert.resolved",
+                "alert.acknowledged",
+                "telemetry.updated",
+                "ownership.updated",
+                "scenario.changed",
+                "replay.changed",
+                "users.changed",
+                "scope.changed",
+                "cursor"
+              ]
+            },
+            "payload": {
+              "type": "object"
+            },
+            "created_at": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      },
+      "Control": {
+        "name": "StreamControl",
+        "payload": {
+          "type": "object",
+          "required": ["type", "payload"],
+          "properties": {
+            "type": {
+              "type": "string",
+              "enum": ["connected", "resync.required"]
+            },
+            "payload": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    }
+  }
+}
