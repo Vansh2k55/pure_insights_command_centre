@@ -11,7 +11,7 @@ Use a Snowflake worksheet with a role permitted to create the isolated assessmen
 3. `sql/03_cost_attribution.sql` creates validation, deduplication, attribution, report-cost and reconciliation views.
 4. `sql/04_acceptance_checks.sql` returns ten boolean checks. Each should be true for the supplied fixture.
 
-The local application works without running any Snowflake script. No Snowflake engine execution was performed while producing this package. Syntax was parsed as Snowflake SQL, and fixture semantics passed in DuckDB using two explicit dialect adapters in `tests/sql_validation.py`.
+The local application works without running any Snowflake script. The fixture path (01–04) and optional adapter (05) were later executed natively in a dedicated assessment database; see the [native run record](snowflake-run.md) for the exact account boundary, results and limitations. Syntax was also parsed as Snowflake SQL, and fixture semantics passed in DuckDB using two explicit dialect adapters in `tests/sql_validation.py`.
 
 ## What the fixture represents
 
@@ -69,4 +69,4 @@ The residual is synthetic and excluded from direct report charges. The conservat
 - [WAREHOUSE_METERING_HISTORY](https://docs.snowflake.com/en/sql-reference/account-usage/warehouse_metering_history): warehouse-level billed compute.
 - [Attributing cost](https://docs.snowflake.com/en/user-guide/cost-attributing): query tagging and cost attribution methods.
 
-Documentation was checked on October 13, 2026. Live account verification remains a separate handover step.
+The native fixture and adapter evidence is recorded in [Native Snowflake fixture run](snowflake-run.md); the supplementary portability evidence is in [Executed DuckDB-adaptation SQL run](DUCKDB_ADAPTATION_RUN.md). Documentation was checked on October 14, 2026.

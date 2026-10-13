@@ -12,7 +12,7 @@ The project is deliberately explicit about its evidence boundaries. Replay is a 
 | --- | --- |
 | Run it | `npm ci && npm run build && npm start` → [http://localhost:3000](http://localhost:3000) |
 | Sign in | `admin@pureinsights.demo` / `InsightsDemo2026!` |
-| Verify it | `npm test` → 28 passing Node tests; browser suite also passed locally |
+| Verify it | `npm test` → 33 passing Node tests; browser suite also passed locally |
 | Core proof | Server-enforced RBAC/redaction, WebSocket alerts, replay controls, SQLite cost lab and Snowflake SQL suite |
 | Important boundary | The source is 20 undated simulated scenarios—not live AWS/Snowflake telemetry or a provider bill |
 
@@ -140,7 +140,7 @@ Negative credit values are analytical nulls. The report stays in operational mon
 
 The verification fixture keeps malformed or missing tags in an explicit unallocated bucket. It also exposes the metering residual rather than automatically charging it to reports; that residual is not proof of idle compute. The explorer's query-count allocation is a disclosed **hypothetical proxy**, never billed attribution.
 
-The interactive lab executes SQLite SQL against its own synthetic fixture. Snowflake scripts 01–04 were executed locally through explicit DuckDB adaptations; script 05 is an optional production adapter and was syntax-checked only. Native Snowflake execution was not performed.
+The interactive lab executes SQLite SQL against its own synthetic fixture. Snowflake fixture scripts 01–04 and the optional account-usage adapter (05) were also executed natively in an isolated assessment database on October 14, 2026; see the [native run record](docs/snowflake-run.md) for exact scope, results and limits. Script 06 remains the separate SQLite counterpart.
 
 ## Dataset interpretation and limitations
 
@@ -159,10 +159,13 @@ The following commands were run locally for this README update:
 ```sh
 npm test
 npm run validate
+python scripts/validate-independent.py
+python -m pip install -r tests/requirements-sql.txt
+python tests/sql_validation.py
 npm run build
 ```
 
-Results: **28/28 Node tests passed**; the source validator confirmed 2,000 rows, 100 reports and 20 observation sets. It also checks golden operational and cost controls for every set; the Vite production build completed successfully.
+Results: **33/33 Node tests passed**. The independent source validator confirmed 2,000 rows, 100 reports and 20 observation sets, with golden operational/cost controls for every set. The fixture's 10 Snowflake acceptance checks passed in a native isolated run; the [native run record](docs/snowflake-run.md) documents its exact scope, data boundaries and app-parity controls. The prior [DuckDB-adaptation run](docs/DUCKDB_ADAPTATION_RUN.md) remains supplementary compatibility evidence. The Vite production build completed successfully.
 
 Browser verification can be run with:
 
@@ -173,7 +176,7 @@ npm run test:browser
 
 In this update, the browser suite passed using a locally installed Chrome executable because Playwright's managed Chromium binary was not present. It exercised all six views, login, role restrictions, search, assignment, export, alerts/recovery, replay, evidence/history, responsive layout and the delayed-refresh drawer-closure regression. The screenshots above were produced by that passing run.
 
-Optional, separate checks (not run for this README update) are:
+To repeat the separate source and SQL checks:
 
 ```sh
 python scripts/validate-independent.py
@@ -230,6 +233,6 @@ First run creates `runtime/insights.sqlite`. It persists sessions, owner assignm
 - [REST and WebSocket specification](docs/API_WEBSOCKET_SPEC.md) · [OpenAPI](docs/openapi.json) · [AsyncAPI](docs/asyncapi.json)
 - [Architecture](docs/ARCHITECTURE.md)
 - [Data decisions](docs/DATA_DECISIONS.md) · [SQL guide](docs/SQL_GUIDE.md)
-- [Verification report](docs/VERIFICATION_REPORT.md)
+- [Verification report](docs/VERIFICATION_REPORT.md) · [Native Snowflake run](docs/snowflake-run.md) · [Executed DuckDB-adaptation run](docs/DUCKDB_ADAPTATION_RUN.md)
 - [Demo and interview handover](docs/DEMO_AND_INTERVIEW.md)
 - [Improvement notes](docs/IMPROVEMENTS.md)

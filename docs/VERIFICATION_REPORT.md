@@ -1,10 +1,10 @@
 # Executed verification — version 2.0.0
 
-Prepared October 13, 2026. Results identify what was actually executed; test counts are not a claim of exhaustive correctness.
+Prepared October 14, 2026. Results identify what was actually executed; test counts are not a claim of exhaustive correctness.
 
 | Check                               | Executed coverage                                                                                                                                                                                                                                     | Result                                    |
 | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
-| Node domain/API/integration tests   | 28 tests: source grain, input validation, redaction, CSV safety, authentication/origins, incident policy, persistence, scope, replay, session revocation, event retention, full role/route permissions and WebSocket boundary controls              | Passed                                    |
+| Node domain/API/integration tests   | 33 tests: source grain, input validation, redaction, CSV safety, authentication/origins, incident policy, persistence, scope, replay, session revocation, event retention, full role/route permissions, WebSocket boundaries, immutable projections, cost/proxy boundaries, deterministic evidence provenance and all-scenario API cost verification | Passed |
 | Independent SQL path                | All 20 sets × credit prices 0, 3, 4.5; per-report SQL/domain parity, invalid-credit nulls, stale duplicates, malformed tags, matching views and portfolio totals                                                                                      | Passed                                    |
 | Role/scope security                 | Admin/engineer/analyst/viewer/owner; owner list/detail/history/evidence/CSV/metrics/alerts; unrelated owner WebSocket delivery/replay filtered; live access change revocation                                                                         | Passed                                    |
 | Incident lifecycle                  | Strict 15s boundary, warning/critical changes without duplicate IDs, ack idempotence, confirmed recovery, UNKNOWN retaining prior refresh failure, new episodes                                                                                       | Passed                                    |
@@ -15,7 +15,9 @@ Prepared October 13, 2026. Results identify what was actually executed; test cou
 | Browser JavaScript                  | Full integration journey with page-error collection                                                                                                                                                                                                   | No page errors                            |
 | Independent source validator        | Python standard-library CSV/hash/Decimal controls for 2,000 rows, 100 IDs ×20, 24 negative credits, 1,490 slow observations and status distribution. It independently checks golden operational/cost controls for every source set: orphan, latency, refresh, health, views, complete-cost coverage, matching views and combined cost. | Passed                                    |
 | Snowflake syntax                    | Five Snowflake scripts parsed in Snowflake dialect; SQLite counterpart parsed in its own dialect                                                                                                                                                      | Passed                                    |
-| Adapted Snowflake fixture execution | Ten boolean checks in DuckDB with disclosed insert/JSON adaptations                                                                                                                                                                                   | Passed                                    |
+| Adapted Snowflake fixture execution | Ten boolean checks in DuckDB with disclosed insert/JSON adaptations; statement counts and exact scope are in [the executed run record](DUCKDB_ADAPTATION_RUN.md)                                                                                     | Passed                                    |
+| Native Snowflake fixture execution | Scripts 01–04 ran in the dedicated assessment database; all ten acceptance rows returned `true`, and native fixture metrics matched app set-1 controls. [Native run record](snowflake-run.md) preserves scope and limits. | Passed |
+| Optional ACCOUNT_USAGE adapter | Script 05 ran in the same dedicated database using its completed 30-day window; result rows were not logged and are not compared to the undated source fixture. [Native run record](snowflake-run.md) | Passed |
 | Production build                    | React/Vite compilation                                                                                                                                                                                                                                | Passed                                    |
 | Dependency audit                    | Locked production/development dependency graph at verification time                                                                                                                                                                                   | 0 reported vulnerabilities                |
 | Source preservation                 | SHA-256 matches original upload byte-for-byte                                                                                                                                                                                                         | Passed                                    |
@@ -25,7 +27,7 @@ The UI cost lab executes eight checks per source set. The synthetic metering ide
 
 ## Environment boundaries
 
-No native Snowflake account was available. Account privileges, native engine behaviour and actual ACCOUNT_USAGE freshness are **not verified**. Local fixture execution uses DuckDB adapters, and the UI lab uses an expressly separate SQLite counterpart. The optional real-account SQL pattern was parsed, not executed against a customer account.
+The native run verified Snowflake execution of the isolated fixture, its acceptance checks and the optional ACCOUNT_USAGE adapter under the configured local role. It does **not** establish the completeness, freshness or business meaning of live account-usage data, live AWS/Snowflake ingestion, or a provider invoice. The UI lab remains an expressly separate SQLite counterpart, and the DuckDB run remains a portability check.
 
 Docker/Compose and hosted GitHub Actions were supplied, but those environments were not executed here. The local Chromium browser run used an available compatible executable because the standard download endpoint was unavailable. README describes the ordinary Playwright browser installation for your laptop/CI. Local testing was on Linux with Node 24; native Windows/macOS startup remains a laptop rehearsal step.
 
@@ -33,7 +35,7 @@ The package was not published to GitHub. Genuine AWS/Snowflake ingestion, servic
 
 ## Reproduce
 
-Use README's application/test commands. `npm test` contains 28 substantive tests; the browser script is a complete multi-role journey. `python scripts/validate-independent.py` needs no third-party modules and checks source controls against `tests/scenario_controls.json`. The optional SQL runner uses tests/requirements-sql.txt. Runtime databases, dependencies, build output and QA screenshots are excluded from the ZIP.
+Use README's application/test commands. `npm test` contains 33 substantive tests; the browser script is a complete multi-role journey. `python scripts/validate-independent.py` needs no third-party modules and checks source controls against `tests/scenario_controls.json`. The native Snowflake procedure and its exact recorded result are in [Native Snowflake run](snowflake-run.md); the adapted SQL runner uses tests/requirements-sql.txt and is recorded in [DuckDB-adaptation run](DUCKDB_ADAPTATION_RUN.md). Runtime databases, dependencies, build output and QA screenshots are excluded from the ZIP.
 
 ## Verification coverage map
 
@@ -45,4 +47,6 @@ Use README's application/test commands. `npm test` contains 28 substantive tests
 | Alert thresholds, deduplication, acknowledgement and recovery | `tests/api.test.js`, `tests/upgrades.test.js`, `docs/API_WEBSOCKET_SPEC.md` |
 | Replay, persistence, restart and retained-event recovery | `tests/api.test.js`, `tests/upgrades.test.js` |
 | Query attribution, tag isolation, invalid credits and conservation | `tests/upgrades.test.js`, `tests/sql_validation.py`, `sql/03_cost_attribution.sql`, `sql/04_acceptance_checks.sql` |
+| Projection immutability, deterministic evidence limits and financial-endpoint contract | `tests/evidence_contracts.test.js` |
+| API verification across all 20 undated source scenarios | `tests/evidence_contracts.test.js`, `scripts/validate-independent.py` |
 | User-facing multi-role workflow and delayed-drawer regression | `tests/browser.mjs` |
