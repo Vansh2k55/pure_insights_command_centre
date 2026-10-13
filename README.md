@@ -6,6 +6,29 @@ Pure Insights Command Centre is a local React and Node.js workspace for investig
 
 The project is deliberately explicit about its evidence boundaries. Replay is a simulated feed over undated source scenarios; the evidence assistant is deterministic rather than an LLM; and the cost lab runs a separate SQLite implementation of the verification logic.
 
+## Evaluator quick scan
+
+| In 60 seconds | Evidence |
+| --- | --- |
+| Run it | `npm ci && npm run build && npm start` → [http://localhost:3000](http://localhost:3000) |
+| Sign in | `admin@pureinsights.demo` / `InsightsDemo2026!` |
+| Verify it | `npm test` → 26 passing Node tests; browser suite also passed locally |
+| Core proof | Server-enforced RBAC/redaction, WebSocket alerts, replay controls, SQLite cost lab and Snowflake SQL suite |
+| Important boundary | The source is 20 undated simulated scenarios—not live AWS/Snowflake telemetry or a provider bill |
+
+## Contents
+
+- [At a glance](#at-a-glance)
+- [Application views](#application-views)
+- [Architecture](#architecture)
+- [Run locally](#run-locally)
+- [Roles, security and scope](#roles-security-and-scope)
+- [Replay, simulation and incident recovery](#replay-simulation-and-incident-recovery)
+- [Cost attribution and verification boundaries](#cost-attribution-and-verification-boundaries)
+- [Dataset interpretation and limitations](#dataset-interpretation-and-limitations)
+- [Verify](#verify)
+- [Suggested evaluator walkthrough](#suggested-evaluator-walkthrough)
+
 ## At a glance
 
 | Case-study need | What is implemented |
