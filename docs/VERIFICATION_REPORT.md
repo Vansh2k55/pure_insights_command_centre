@@ -13,7 +13,7 @@ Prepared October 13, 2026. Results identify what was actually executed; test cou
 | Browser integration                 | Login/five roles, all six screens, search, owner edit/demo assignment, download, simulation/recovery, replay controls, evidence/history, cost explorer, account screen, dark/light themes and deterministic delayed-refresh drawer-closure regression | Passed                                    |
 | Browser layout                      | 1440px desktop and 390px mobile, no document overflow in mobile journey; screenshot inspection of desktop/mobile/light mode                                                                                                                           | Passed                                    |
 | Browser JavaScript                  | Full integration journey with page-error collection                                                                                                                                                                                                   | No page errors                            |
-| Independent source validator        | Python standard-library CSV/hash/Decimal controls for 2,000 rows, 100 IDs ×20, 24 negative credits, 1,490 slow observations, status distribution and twenty cost populations                                                                          | Passed                                    |
+| Independent source validator        | Python standard-library CSV/hash/Decimal controls for 2,000 rows, 100 IDs ×20, 24 negative credits, 1,490 slow observations, status distribution and per-set operational/cost computations; set 1 independently asserts orphan, latency, refresh, health, views and cost controls | Passed                                    |
 | Snowflake syntax                    | Five Snowflake scripts parsed in Snowflake dialect; SQLite counterpart parsed in its own dialect                                                                                                                                                      | Passed                                    |
 | Adapted Snowflake fixture execution | Ten boolean checks in DuckDB with disclosed insert/JSON adaptations                                                                                                                                                                                   | Passed                                    |
 | Production build                    | React/Vite compilation                                                                                                                                                                                                                                | Passed                                    |
@@ -34,3 +34,15 @@ The package was not published to GitHub. Genuine AWS/Snowflake ingestion, servic
 ## Reproduce
 
 Use README's application/test commands. `npm test` contains 26 substantive tests; the browser script is a complete multi-role journey. `python scripts/validate-independent.py` needs no third-party modules. The optional SQL runner uses tests/requirements-sql.txt. Runtime databases, dependencies, build output and QA screenshots are excluded from the ZIP.
+
+## Verification coverage map
+
+| Risk or requirement | Evidence location |
+| --- | --- |
+| Source grain, invalid credits, matching cost/view population and safe CSV | `tests/domain.test.js`, `scripts/validate-independent.py` |
+| Authentication, origin/header controls and malformed input | `tests/api.test.js`, `tests/security.test.js`, `tests/local-origin.test.js` |
+| Five-role projection, owner object scope and financial redaction | `tests/api.test.js`, `tests/upgrades.test.js`, `docs/openapi.json` |
+| Alert thresholds, deduplication, acknowledgement and recovery | `tests/api.test.js`, `tests/upgrades.test.js`, `docs/API_WEBSOCKET_SPEC.md` |
+| Replay, persistence, restart and retained-event recovery | `tests/api.test.js`, `tests/upgrades.test.js` |
+| Query attribution, tag isolation, invalid credits and conservation | `tests/upgrades.test.js`, `tests/sql_validation.py`, `sql/03_cost_attribution.sql`, `sql/04_acceptance_checks.sql` |
+| User-facing multi-role workflow and delayed-drawer regression | `tests/browser.mjs` |
