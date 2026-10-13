@@ -1,0 +1,22 @@
+{
+  "1": {"orphans": 17, "slow": 77, "refresh_failures": 33, "unknown_refresh": 3, "successful_refreshes": 64, "healthy": 10, "views": 78478, "complete_cost_reports": 99, "matched_views": 78239, "combined_usd": "188417.87"},
+  "2": {"orphans": 15, "slow": 77, "refresh_failures": 27, "unknown_refresh": 5, "successful_refreshes": 68, "healthy": 13, "views": 83085, "complete_cost_reports": 99, "matched_views": 82629, "combined_usd": "205740.20"},
+  "3": {"orphans": 12, "slow": 75, "refresh_failures": 22, "unknown_refresh": 9, "successful_refreshes": 69, "healthy": 14, "views": 72482, "complete_cost_reports": 100, "matched_views": 72482, "combined_usd": "211838.35"},
+  "4": {"orphans": 12, "slow": 73, "refresh_failures": 22, "unknown_refresh": 5, "successful_refreshes": 73, "healthy": 18, "views": 80718, "complete_cost_reports": 99, "matched_views": 80284, "combined_usd": "212520.81"},
+  "5": {"orphans": 13, "slow": 79, "refresh_failures": 26, "unknown_refresh": 9, "successful_refreshes": 65, "healthy": 7, "views": 60993, "complete_cost_reports": 98, "matched_views": 59961, "combined_usd": "196707.03"},
+  "6": {"orphans": 14, "slow": 77, "refresh_failures": 24, "unknown_refresh": 4, "successful_refreshes": 72, "healthy": 16, "views": 70785, "complete_cost_reports": 99, "matched_views": 70647, "combined_usd": "198799.86"},
+  "7": {"orphans": 15, "slow": 76, "refresh_failures": 37, "unknown_refresh": 4, "successful_refreshes": 59, "healthy": 10, "views": 72740, "complete_cost_reports": 98, "matched_views": 71902, "combined_usd": "209378.33"},
+  "8": {"orphans": 11, "slow": 75, "refresh_failures": 35, "unknown_refresh": 5, "successful_refreshes": 60, "healthy": 12, "views": 79308, "complete_cost_reports": 100, "matched_views": 79308, "combined_usd": "195819.59"},
+  "9": {"orphans": 14, "slow": 76, "refresh_failures": 25, "unknown_refresh": 3, "successful_refreshes": 72, "healthy": 13, "views": 79606, "complete_cost_reports": 99, "matched_views": 78689, "combined_usd": "220349.30"},
+  "10": {"orphans": 8, "slow": 73, "refresh_failures": 29, "unknown_refresh": 6, "successful_refreshes": 65, "healthy": 16, "views": 75265, "complete_cost_reports": 99, "matched_views": 74434, "combined_usd": "219074.97"},
+  "11": {"orphans": 10, "slow": 76, "refresh_failures": 32, "unknown_refresh": 5, "successful_refreshes": 63, "healthy": 12, "views": 79842, "complete_cost_reports": 98, "matched_views": 78384, "combined_usd": "203416.50"},
+  "12": {"orphans": 7, "slow": 66, "refresh_failures": 22, "unknown_refresh": 8, "successful_refreshes": 70, "healthy": 24, "views": 74317, "complete_cost_reports": 98, "matched_views": 72325, "combined_usd": "200240.15"},
+  "13": {"orphans": 8, "slow": 74, "refresh_failures": 29, "unknown_refresh": 5, "successful_refreshes": 66, "healthy": 12, "views": 71177, "complete_cost_reports": 99, "matched_views": 70609, "combined_usd": "209240.92"},
+  "14": {"orphans": 6, "slow": 82, "refresh_failures": 24, "unknown_refresh": 7, "successful_refreshes": 69, "healthy": 12, "views": 71311, "complete_cost_reports": 97, "matched_views": 69159, "combined_usd": "191877.31"},
+  "15": {"orphans": 12, "slow": 73, "refresh_failures": 32, "unknown_refresh": 5, "successful_refreshes": 63, "healthy": 18, "views": 79487, "complete_cost_reports": 99, "matched_views": 77992, "combined_usd": "200860.44"},
+  "16": {"orphans": 19, "slow": 76, "refresh_failures": 27, "unknown_refresh": 2, "successful_refreshes": 71, "healthy": 13, "views": 71914, "complete_cost_reports": 100, "matched_views": 71914, "combined_usd": "200173.39"},
+  "17": {"orphans": 11, "slow": 74, "refresh_failures": 32, "unknown_refresh": 4, "successful_refreshes": 64, "healthy": 16, "views": 79998, "complete_cost_reports": 98, "matched_views": 78136, "combined_usd": "204596.53"},
+  "18": {"orphans": 11, "slow": 64, "refresh_failures": 32, "unknown_refresh": 4, "successful_refreshes": 64, "healthy": 22, "views": 68743, "complete_cost_reports": 99, "matched_views": 67605, "combined_usd": "193980.51"},
+  "19": {"orphans": 16, "slow": 71, "refresh_failures": 29, "unknown_refresh": 2, "successful_refreshes": 69, "healthy": 13, "views": 72258, "complete_cost_reports": 100, "matched_views": 72258, "combined_usd": "203818.85"},
+  "20": {"orphans": 14, "slow": 76, "refresh_failures": 25, "unknown_refresh": 5, "successful_refreshes": 70, "healthy": 16, "views": 80774, "complete_cost_reports": 98, "matched_views": 79948, "combined_usd": "207434.40"}
+}
